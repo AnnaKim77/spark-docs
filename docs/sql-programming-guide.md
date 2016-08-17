@@ -8,6 +8,7 @@ title: Spark SQL and DataFrames
 {:toc}
 
 # Overview
+# 개요
 
 Spark SQL is a Spark module for structured data processing. Unlike the basic Spark RDD API, the interfaces provided
 by Spark SQL provide Spark with more information about the structure of both the data and the computation being performed. Internally,
@@ -17,8 +18,17 @@ the same execution engine is used, independent of which API/language you are usi
 computation. This unification means that developers can easily switch back and forth between
 different APIs based on which provides the most natural way to express a given transformation.
 
+Spark SQL은 정형 데이터 처리를 위한 스파크 모듈이다. 
+기본적인 Spark RDD API와 달리, Spark SQL에 의해 제공되는 인터페이스들은 데이터와 수행되고 있는 연산의 구조에 대해 더 많은 정보를 포함하는 스파크를 제공한다.
+내부적으로, Spark SQL은 추가적인 최적화 작업을 수행하기 위해 이러한 추가적인 정보를 사용한다.
+SQL을 포함하는 Spark SQL과 Dataset API가 상호작용하는 여러가지 방법이 있다. 
+결과를 계산할 때 동일한 실행 엔진은 당신이 계산을 표현하기 위해 사용하는 API/언어에 관계 없이 사용된다.
+이러한 통합은 어떤 언어가 특정한 변환을 표현하는 데 가장 자연스러운 방법을 제공하느냐에 따라 개발자가 서로 다른 API 사이에서 쉽게 이리저리 전환할 수 있다는 것을 의미한다.
+
 All of the examples on this page use sample data included in the Spark distribution and can be run in
 the `spark-shell`, `pyspark` shell, or `sparkR` shell.
+
+이 페이지의 모든 예제들은 Spark 배포판에 포함된 샘플 데이터를 사용하며 `spark-shell`, `pyspark` 쉘, 또는 `sparkR` 쉘에서 실행할 수 있다. 
 
 ## SQL
 
@@ -28,6 +38,12 @@ configure this feature, please refer to the [Hive Tables](#hive-tables) section.
 SQL from within another programming language the results will be returned as a [Dataset/DataFrame](#datasets-and-dataframes).
 You can also interact with the SQL interface using the [command-line](#running-the-spark-sql-cli)
 or over [JDBC/ODBC](#running-the-thrift-jdbcodbc-server).
+
+Spark SQL을 사용하는 이유 중 하나는 SQL 쿼리를 실행하는 것이다.
+Spark SQL은 또한 기존에 설치된 Hive로부터 데이터를 읽어들이는 데에 사용될 수 있다.
+이러한 기능을 구성하는 방법에 대해 더 많은 정보를 알고 싶다면, [Hive 테이블](#hive-tables) 섹션을 참고하세요.
+다른 프로그래밍 언어로 SQL을 실행하면 결과는 [Dataset/DataFrame](#datasets-and-dataframes)로 반환됩니다.
+당신은 또한 [커맨드 라인](#running-the-spark-sql-cli)을 사용하거나 [JDBC/ODBC](#running-the-thrift-jdbcodbc-server)를 통해 SQL 인터페이스와 상호작용할 수 있습니다.
 
 ## Datasets and DataFrames
 
@@ -40,6 +56,15 @@ The Dataset API is available in [Scala][scala-datasets] and
 [Java][java-datasets]. Python does not have the support for the Dataset API. But due to Python's dynamic nature,
 many of the benefits of the Dataset API are already available (i.e. you can access the field of a row by name naturally
 `row.columnName`). The case for R is similar.
+
+Dataset은 분산된 데이터의 컬렉션(모음)이다.
+Dataset은 RDD의 이점(강력한 타입;strong typing, 강력한 람다 함수를 사용하 능력)과 Spark SQL의 최적화된 실행 엔진의 이점을 제공하는 Spark 1.6에 추가된 새로운 인터페이스이다.
+Dataset은 JVM 객체로부터 [생성](#creating-datasets)을 하고 나서 함수적인 변형(`map`, `flatMap`, `filter` 등)을 사용하여 조작할 수 있다.
+Dataset API는 [스칼라(Scala)][scala-datasets]와 [자바(Java)][java-datasets]로 활용가능하다.
+파이썬(Python)은 Dataset API를 지원하지 않는다.
+그러나 파이썬의 동적인 특성으로 인해, Dataset API의 대부분의 이점들은 이미 사용가능하다.
+(즉, 당신은 자연스럽게 `row.columnName`을 사용하여 row의 영역에 접근할 수 있다.)
+R에 대한 경우도 이와 비슷하다.
 
 A DataFrame is a *Dataset* organized into named columns. It is conceptually
 equivalent to a table in a relational database or a data frame in R/Python, but with richer
