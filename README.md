@@ -25,6 +25,11 @@ git, github 공부 추천 링크 : http://nolboo.kim/blog/2013/10/06/github-for-
 
 빌드 방법 : https://medium.com/@oopchoi/%EB%A7%A5os%EC%97%90%EC%84%9C-spark-docs-%EB%B9%8C%EB%93%9C%ED%95%98%EA%B8%B0-d8794ea09c3e#.7mgtxkf08
 
+# 빌드 완료버전 
+
+번역 최종 버전 보기
+http://edd.exem-oss.org/docs/spark2/_site/index.html 
+
 # Apache Spark
 
 Spark is a fast and general cluster computing system for Big Data. It provides
