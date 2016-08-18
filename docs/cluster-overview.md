@@ -118,6 +118,7 @@ manager) and _within_ applications (if multiple computations are happening on th
 The [job scheduling overview](job-scheduling.html) describes this in more detail.
 
 스파크는 _across_ 애플리케이션들(클러스터 매니저 수준에서)과 _within_ 애플리케이션들(다중 연산이 같은 SparkContext에서 일어난다면)에 대해 자원 할당을 통해 제어할 수 있다.
+[잡 스케줄링 개요](job-scheduling.html)은 자세한 내용을 설명한다.
 
 # Glossary
 
