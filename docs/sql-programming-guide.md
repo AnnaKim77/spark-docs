@@ -81,14 +81,30 @@ While, in [Java API][java-datasets], users need to use `Dataset<Row>` to represe
 
 Throughout this document, we will often refer to Scala/Java Datasets of `Row`s as DataFrames.
 
+DataFrame은 이름이 부여된 컬럼들로 구성된 *Dataset*이다. 
+개념적으로 관계형 데이터베이스의 테이블이나 R/Python의 데이터 프레임과 동등하지만, 스파크 엔진에서 더 풍부한 최적화를 지닌다.
+DataFrame은 정형 데이터 파일, 하이브 테이브, 외부 데이터베이스 또는 기존의 RDD와 같은 다양한 [소스](#data-sources)로부터 생성될 수 있다.
+DataFrame API는 스칼라, 자바, [파이썬](api/python/pyspark.sql.html#pyspark.sql.DataFrame), 그리고 [R](api/R/index.html)로 사용할 수 있다.
+스칼라와 자바에서, DataFrame은 여러 `Row`들의 Dataset으로 나타낸다.
+[스칼라 API][scala-datasets]에서, `DataFrame`은 단순히 `Dataset[Row]`의 타입 별칭이다.
+반면에, [자바 API][java-datasets]에서, 사용자들은 `DataFrame`을 표현하기 위해 `Dataset<Row>`을 필요로 한다.
+
+[scala-datasets]: api/scala/index.html#org.apache.spark.sql.Dataset
+[java-datasets]: api/java/index.html?org/apache/spark/sql/Dataset.html
+
+이 문서에서, 우리는 종종 `Row`의 스칼라/자바 Dataset을 DataFrame으로 언급할 것이다.
+
 # Getting Started
+# 시작하기
 
 ## Starting Point: SparkSession
+## 출발점: SparkSession
 
 <div class="codetabs">
 <div data-lang="scala"  markdown="1">
 
 The entry point into all functionality in Spark is the [`SparkSession`](api/scala/index.html#org.apache.spark.sql.SparkSession) class. To create a basic `SparkSession`, just use `SparkSession.builder()`:
+스파크에서의 모든 함수의 엔트리 포인트는 [`SparkSession`](api/scala/index.html#org.apache.spark.sql.SparkSession) 클래스이다. 기본적인 `SparkSession`을 생성하기 위해서, 단지 `SparkSession.builder()`를 사용하면 된다.
 
 {% include_example init_session scala/org/apache/spark/examples/sql/SparkSQLExample.scala %}
 </div>
@@ -96,6 +112,7 @@ The entry point into all functionality in Spark is the [`SparkSession`](api/scal
 <div data-lang="java" markdown="1">
 
 The entry point into all functionality in Spark is the [`SparkSession`](api/java/index.html#org.apache.spark.sql.SparkSession) class. To create a basic `SparkSession`, just use `SparkSession.builder()`:
+스파크에서의 모든 함수의 엔트리 포인트는 [`SparkSession`](api/java/index.html#org.apache.spark.sql.SparkSession) 클래스이다. 기본적인 `SparkSession`을 생성하기 위해서, 단지 `SparkSession.builder()`를 사용하면 된다.
 
 {% include_example init_session java/org/apache/spark/examples/sql/JavaSparkSQLExample.java %}
 </div>
@@ -103,6 +120,7 @@ The entry point into all functionality in Spark is the [`SparkSession`](api/java
 <div data-lang="python"  markdown="1">
 
 The entry point into all functionality in Spark is the [`SparkSession`](api/python/pyspark.sql.html#pyspark.sql.SparkSession) class. To create a basic `SparkSession`, just use `SparkSession.builder`:
+스파크에서의 모든 함수의 엔트리 포인트는 [`SparkSession`](api/python/index.html#org.apache.spark.sql.SparkSession) 클래스이다. 기본적인 `SparkSession`을 생성하기 위해서, 단지 `SparkSession.builder()`를 사용하면 된다.
 
 {% include_example init_session python/sql/basic.py %}
 </div>
@@ -110,10 +128,17 @@ The entry point into all functionality in Spark is the [`SparkSession`](api/pyth
 <div data-lang="r"  markdown="1">
 
 The entry point into all functionality in Spark is the [`SparkSession`](api/R/sparkR.session.html) class. To initialize a basic `SparkSession`, just call `sparkR.session()`:
+스파크에서의 모든 함수의 엔트리 포인트는 [`SparkSession`](api/R/index.html#org.apache.spark.sql.SparkSession) 클래스이다. 기본적인 `SparkSession`을 생성하기 위해서, 단지 `sparkR.session()`를 사용하면 된다.
 
 {% include_example init_session r/RSparkSQLExample.R %}
 
-Note that when invoked for the first time, `sparkR.session()` initializes a global `SparkSession` singleton instance, and always returns a reference to this instance for successive invocations. In this way, users only need to initialize the `SparkSession` once, then SparkR functions like `read.df` will be able to access this global instance implicitly, and users don't need to pass the `SparkSession` instance around.
+Note that when invoked for the first time, `sparkR.session()` initializes a global `SparkSession` singleton instance, and always returns a reference to this instance for successive
+ invocations. In this way, users only need to initialize the `SparkSession` once, then SparkR functions like `read.df` will be able to access this global instance implicitly, 
+ and users don't need to pass the `SparkSession` instance around.
+ 
+처음으로 호출할 때, `sparkR.session()`은 전역적인 `SparkSession` 단독 인스턴스를 초기화하고 항상 성공적인 호출에 대한 해당 인스턴스로 참조를 반환한다는 점에 주목하라. 이러한 방식으로, 사용자는 단지 `SparkSession`을 한번만 초기화하면 된다.
+그리고 나서 `read.df`와 같은 sparkR 함수는 이러한 전역 인스턴스에 내재적으로 접근할 수 있고, 사용자는 `SparkSession` 인스턴스를 주위에 전달할 필요가 없다.
+
 </div>
 </div>
 
@@ -121,41 +146,57 @@ Note that when invoked for the first time, `sparkR.session()` initializes a glob
 write queries using HiveQL, access to Hive UDFs, and the ability to read data from Hive tables.
 To use these features, you do not need to have an existing Hive setup.
 
+스파크 2.0의 `SparkSession`은 HiveQL을 사용하여 쿼리를 작성하는 능력, Hive UDF로의 접근, 그리고 Hive 테이블로부터 데이터를 읽어들이는 능력을 포함하는 하이브 특성에 대해 내장된 지원을 제공한다.
+이러한 특징을 사용하기 위해, 당신은 기존의 Hive 설정을 갖고 있을 필요가 없다.
+
 ## Creating DataFrames
+## DataFrame 생성하기
 
 <div class="codetabs">
 <div data-lang="scala"  markdown="1">
+
 With a `SparkSession`, applications can create DataFrames from an [existing `RDD`](#interoperating-with-rdds),
 from a Hive table, or from [Spark data sources](#data-sources).
+`SparkSession`으로, 애플리케이션은 [기존 `RDD`](#interoperating-with-rdds), 하이브 테이블, 또는 [Spark data sources](#data-sources)로부터 DataFrame을 생성할 수 있다.
 
 As an example, the following creates a DataFrame based on the content of a JSON file:
+예시로서, 다음은 JSON 파일의 내용을 기반으로 DataFrame을 생성한다.
 
 {% include_example create_df scala/org/apache/spark/examples/sql/SparkSQLExample.scala %}
 </div>
 
 <div data-lang="java" markdown="1">
+
 With a `SparkSession`, applications can create DataFrames from an [existing `RDD`](#interoperating-with-rdds),
 from a Hive table, or from [Spark data sources](#data-sources).
+`SparkSession`으로, 애플리케이션은 [기존 `RDD`](#interoperating-with-rdds), 하이브 테이블, 또는 [Spark data sources](#data-sources)로부터 DataFrame을 생성할 수 있다.
 
 As an example, the following creates a DataFrame based on the content of a JSON file:
+예시로서, 다음은 JSON 파일의 내용을 기반으로 DataFrame을 생성한다.
 
 {% include_example create_df java/org/apache/spark/examples/sql/JavaSparkSQLExample.java %}
 </div>
 
 <div data-lang="python"  markdown="1">
+
 With a `SparkSession`, applications can create DataFrames from an [existing `RDD`](#interoperating-with-rdds),
 from a Hive table, or from [Spark data sources](#data-sources).
+`SparkSession`으로, 애플리케이션은 [기존 `RDD`](#interoperating-with-rdds), 하이브 테이블, 또는 [Spark data sources](#data-sources)로부터 DataFrame을 생성할 수 있다.
 
 As an example, the following creates a DataFrame based on the content of a JSON file:
+예시로서, 다음은 JSON 파일의 내용을 기반으로 DataFrame을 생성한다.
 
 {% include_example create_df python/sql/basic.py %}
 </div>
 
 <div data-lang="r"  markdown="1">
+
 With a `SparkSession`, applications can create DataFrames from a local R data.frame,
 from a Hive table, or from [Spark data sources](#data-sources).
+`SparkSession`으로, 애플리케이션은 [기존 `RDD`](#interoperating-with-rdds), 하이브 테이블, 또는 [Spark data sources](#data-sources)로부터 DataFrame을 생성할 수 있다.
 
 As an example, the following creates a DataFrame based on the content of a JSON file:
+예시로서, 다음은 JSON 파일의 내용을 기반으로 DataFrame을 생성한다.
 
 {% include_example create_df r/RSparkSQLExample.R %}
 
@@ -164,12 +205,16 @@ As an example, the following creates a DataFrame based on the content of a JSON 
 
 
 ## Untyped Dataset Operations (aka DataFrame Operations)
+## 형식화되지 않은 데이터집합 연산 (DataFrame 연산)
 
 DataFrames provide a domain-specific language for structured data manipulation in [Scala](api/scala/index.html#org.apache.spark.sql.Dataset), [Java](api/java/index.html?org/apache/spark/sql/Dataset.html), [Python](api/python/pyspark.sql.html#pyspark.sql.DataFrame) and [R](api/R/DataFrame.html).
+DataFrame은 [스칼라](api/scala/index.html#org.apache.spark.sql.Dataset), [자바](api/java/index.html?org/apache/spark/sql/Dataset.html), [파이썬](api/python/pyspark.sql.html#pyspark.sql.DataFrame) 그리고 [R](api/R/DataFrame.html)로 정형 데이터 조작에 대한 도메인 특정 언어를 제공한다.
 
 As mentioned above, in Spark 2.0, DataFrames are just Dataset of `Row`s in Scala and Java API. These operations are also referred as "untyped transformations" in contrast to "typed transformations" come with strongly typed Scala/Java Datasets.
+위에서 언급한대로, 스파크 2.0에서 DataFrame은 스칼라와 자바 API에서 단지 `Row`의 데이터집합이다. 이러한 연산들은 또한 강력하게 형식화된 스칼라/자바 데이터셋과 함께 "형식화된 변형"과 대조적으로 "형식화되지 않은 변형"으로 언급된다.
 
 Here we include some basic examples of structured data processing using Datasets:
+여기서 우리는 데이터셋을 사용하여 정형 데이터 처리의 몇 가지 기본적인 예시를 포함한다.
 
 <div class="codetabs">
 <div data-lang="scala"  markdown="1">
