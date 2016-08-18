@@ -7,7 +7,7 @@
 ### 슬랙을 사용합니다.
 
 https://sparkdoc.slack.com
-슬랙에 초대를 원하시는 분은 gmail 주소를 남겨주세요. 
+슬랙에 초대를 원하시는 분은 gmail 주소를 oopchoi@gmail.com 으로 성함과 함께 보내주세요. 
 
 git, github 공부 추천 링크 : http://nolboo.kim/blog/2013/10/06/github-for-beginner/
 
