@@ -4,6 +4,11 @@
 기본적으로 https://spark.apache.org/docs/latest/ 문서에 걸려있는 모든 링크에 대해 번역 하는 것을 목적으로 합니다.
 사전 지식으로 git, github 사용법을 이해하셔야 합니다. 마크다운(md) 문서 작성에 대해서도 이해가 필요하지만 실제 md 파일을 열어보시면 직관적으로 바로 아실 수 있기 때문에 따로 공부하지 않으셔도 될 것 같습니다.
 
+### 슬랙을 사용합니다.
+
+https://sparkdoc.slack.com
+슬랙에 초대를 원하시는 분은 gmail 주소를 남겨주세요. 
+
 git, github 공부 추천 링크 : http://nolboo.kim/blog/2013/10/06/github-for-beginner/
 
 ### 1. https://github.com/oopchoi/spark-docs 접속해서 Fork
