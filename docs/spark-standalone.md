@@ -3,7 +3,7 @@ layout: global
 title: Spark Standalone Mode
 ---
 
-* 이 것은 컨텐츠의 표가 될 것이다 (이 텍스트는 폐기 될 것이다).
+* 이 것은 컨텐츠의 목차가 될 것이다 (이 텍스트는 폐기 될 것이다).
 {:toc}
 
 In addition to running on the Mesos or YARN cluster managers, Spark also provides a simple standalone deploy mode. You can launch a standalone cluster either manually, by starting a master and workers by hand, or use our provided [launch scripts](#cluster-launch-scripts). It is also possible to run these daemons on a single machine for testing.

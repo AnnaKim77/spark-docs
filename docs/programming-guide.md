@@ -7,10 +7,17 @@ description: Spark SPARK_VERSION_SHORT programming guide in Java, Scala and Pyth
 * This will become a table of contents (this text will be scraped).
 {:toc}
 
+* 이 것은 컨텐츠의 목차가 될 것이다 (이 텍스트는 폐기 될 것이다).
+{:toc}
+
 
 # Overview
 
+# 개요
+
 At a high level, every Spark application consists of a *driver program* that runs the user's `main` function and executes various *parallel operations* on a cluster. The main abstraction Spark provides is a *resilient distributed dataset* (RDD), which is a collection of elements partitioned across the nodes of the cluster that can be operated on in parallel. RDDs are created by starting with a file in the Hadoop file system (or any other Hadoop-supported file system), or an existing Scala collection in the driver program, and transforming it. Users may also ask Spark to *persist* an RDD in memory, allowing it to be reused efficiently across parallel operations. Finally, RDDs automatically recover from node failures.
+ 
+고수준에서, 모든 스팔크 애플리케이션은 클러스터에서 `main` 함수를 실행하고 다양한 *병렬 연산들*과 *드라이버 프로그램*으로 구성된다. 스파크에서 제공되는 주요 추상화는 *탄력적인 분산 데이터셋* (RDD)이고, 각 RDD는 병렬로 작동될 수 있는 클러스터의 노드들에 분할된 요소들의 콜렉션이다. RDD는 하둡 파일 시스템(또는 다른 특정 하둡을 지원하는 파일 시스템)에서 파일 또는 드라이버 프로그램에 존재하는 스칼라 콜렉션으로 시작하여 생성된다. 그리고 RDD를 변환하여 생성된다. 사용자는 RDD를 병렬 연산에 걸쳐 효율적으로 재사용 할 수 있도록 메모리에 *영속하기*위해 스파크에 요청할 것이다. 마지막으로, RDD는 노드 장애를 자동으로 복구한다.
 
 A second abstraction in Spark is *shared variables* that can be used in parallel operations. By default, when Spark runs a function in parallel as a set of tasks on different nodes, it ships a copy of each variable used in the function to each task. Sometimes, a variable needs to be shared across tasks, or between tasks and the driver program. Spark supports two types of shared variables: *broadcast variables*, which can be used to cache a value in memory on all nodes, and *accumulators*, which are variables that are only "added" to, such as counters and sums.
 

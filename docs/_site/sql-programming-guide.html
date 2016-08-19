@@ -206,6 +206,7 @@
 </ul>
 
 <h1 id="overview">Overview</h1>
+<p># 개요</p>
 
 <p>Spark SQL is a Spark module for structured data processing. Unlike the basic Spark RDD API, the interfaces provided
 by Spark SQL provide Spark with more information about the structure of both the data and the computation being performed. Internally,
@@ -215,8 +216,17 @@ the same execution engine is used, independent of which API/language you are usi
 computation. This unification means that developers can easily switch back and forth between
 different APIs based on which provides the most natural way to express a given transformation.</p>
 
+<p>Spark SQL은 정형 데이터 처리를 위한 스파크 모듈이다. 
+기본적인 Spark RDD API와 달리, Spark SQL에 의해 제공되는 인터페이스들은 데이터와 수행되고 있는 연산의 구조에 대해 더 많은 정보를 포함하는 스파크를 제공한다.
+내부적으로, Spark SQL은 추가적인 최적화 작업을 수행하기 위해 이러한 추가적인 정보를 사용한다.
+SQL을 포함하는 Spark SQL과 Dataset API가 상호작용하는 여러가지 방법이 있다. 
+결과를 계산할 때 동일한 실행 엔진은 당신이 계산을 표현하기 위해 사용하는 API/언어에 관계 없이 사용된다.
+이러한 통합은 어떤 언어가 특정한 변환을 표현하는 데 가장 자연스러운 방법을 제공하느냐에 따라 개발자가 서로 다른 API 사이에서 쉽게 이리저리 전환할 수 있다는 것을 의미한다.</p>
+
 <p>All of the examples on this page use sample data included in the Spark distribution and can be run in
 the <code>spark-shell</code>, <code>pyspark</code> shell, or <code>sparkR</code> shell.</p>
+
+<p>이 페이지의 모든 예제들은 Spark 배포판에 포함된 샘플 데이터를 사용하며 <code>spark-shell</code>, <code>pyspark</code> 쉘, 또는 <code>sparkR</code> 쉘에서 실행할 수 있다.</p>
 
 <h2 id="sql">SQL</h2>
 
@@ -226,6 +236,12 @@ configure this feature, please refer to the <a href="#hive-tables">Hive Tables</
 SQL from within another programming language the results will be returned as a <a href="#datasets-and-dataframes">Dataset/DataFrame</a>.
 You can also interact with the SQL interface using the <a href="#running-the-spark-sql-cli">command-line</a>
 or over <a href="#running-the-thrift-jdbcodbc-server">JDBC/ODBC</a>.</p>
+
+<p>Spark SQL을 사용하는 이유 중 하나는 SQL 쿼리를 실행하는 것이다.
+Spark SQL은 또한 기존에 설치된 Hive로부터 데이터를 읽어들이는 데에 사용될 수 있다.
+이러한 기능을 구성하는 방법에 대해 더 많은 정보를 알고 싶다면, <a href="#hive-tables">Hive 테이블</a> 섹션을 참고하세요.
+다른 프로그래밍 언어로 SQL을 실행하면 결과는 <a href="#datasets-and-dataframes">Dataset/DataFrame</a>로 반환됩니다.
+당신은 또한 <a href="#running-the-spark-sql-cli">커맨드 라인</a>을 사용하거나 <a href="#running-the-thrift-jdbcodbc-server">JDBC/ODBC</a>를 통해 SQL 인터페이스와 상호작용할 수 있습니다.</p>
 
 <h2 id="datasets-and-dataframes">Datasets and DataFrames</h2>
 
@@ -239,6 +255,15 @@ The Dataset API is available in <a href="api/scala/index.html#org.apache.spark.s
 many of the benefits of the Dataset API are already available (i.e. you can access the field of a row by name naturally
 <code>row.columnName</code>). The case for R is similar.</p>
 
+<p>Dataset은 분산된 데이터의 컬렉션(모음)이다.
+Dataset은 RDD의 이점(강력한 타입;strong typing, 강력한 람다 함수를 사용하 능력)과 Spark SQL의 최적화된 실행 엔진의 이점을 제공하는 Spark 1.6에 추가된 새로운 인터페이스이다.
+Dataset은 JVM 객체로부터 <a href="#creating-datasets">생성</a>을 하고 나서 함수적인 변형(<code>map</code>, <code>flatMap</code>, <code>filter</code> 등)을 사용하여 조작할 수 있다.
+Dataset API는 <a href="api/scala/index.html#org.apache.spark.sql.Dataset">스칼라(Scala)</a>와 <a href="api/java/index.html?org/apache/spark/sql/Dataset.html">자바(Java)</a>로 활용가능하다.
+파이썬(Python)은 Dataset API를 지원하지 않는다.
+그러나 파이썬의 동적인 특성으로 인해, Dataset API의 대부분의 이점들은 이미 사용가능하다.
+(즉, 당신은 자연스럽게 <code>row.columnName</code>을 사용하여 row의 영역에 접근할 수 있다.)
+R에 대한 경우도 이와 비슷하다.</p>
+
 <p>A DataFrame is a <em>Dataset</em> organized into named columns. It is conceptually
 equivalent to a table in a relational database or a data frame in R/Python, but with richer
 optimizations under the hood. DataFrames can be constructed from a wide array of <a href="#data-sources">sources</a> such
@@ -251,14 +276,27 @@ While, in <a href="api/java/index.html?org/apache/spark/sql/Dataset.html">Java A
 
 <p>Throughout this document, we will often refer to Scala/Java Datasets of <code>Row</code>s as DataFrames.</p>
 
+<p>DataFrame은 이름이 부여된 컬럼들로 구성된 <em>Dataset</em>이다. 
+개념적으로 관계형 데이터베이스의 테이블이나 R/Python의 데이터 프레임과 동등하지만, 스파크 엔진에서 더 풍부한 최적화를 지닌다.
+DataFrame은 정형 데이터 파일, 하이브 테이브, 외부 데이터베이스 또는 기존의 RDD와 같은 다양한 <a href="#data-sources">소스</a>로부터 생성될 수 있다.
+DataFrame API는 스칼라, 자바, <a href="api/python/pyspark.sql.html#pyspark.sql.DataFrame">파이썬</a>, 그리고 <a href="api/R/index.html">R</a>로 사용할 수 있다.
+스칼라와 자바에서, DataFrame은 여러 <code>Row</code>들의 Dataset으로 나타낸다.
+<a href="api/scala/index.html#org.apache.spark.sql.Dataset">스칼라 API</a>에서, <code>DataFrame</code>은 단순히 <code>Dataset[Row]</code>의 타입 별칭이다.
+반면에, <a href="api/java/index.html?org/apache/spark/sql/Dataset.html">자바 API</a>에서, 사용자들은 <code>DataFrame</code>을 표현하기 위해 <code>Dataset&lt;Row&gt;</code>을 필요로 한다.</p>
+
+<p>이 문서에서, 우리는 종종 <code>Row</code>의 스칼라/자바 Dataset을 DataFrame으로 언급할 것이다.</p>
+
 <h1 id="getting-started">Getting Started</h1>
+<p># 시작하기</p>
 
 <h2 id="starting-point-sparksession">Starting Point: SparkSession</h2>
+<p>## 출발점: SparkSession</p>
 
 <div class="codetabs">
 <div data-lang="scala">
 
-    <p>The entry point into all functionality in Spark is the <a href="api/scala/index.html#org.apache.spark.sql.SparkSession"><code>SparkSession</code></a> class. To create a basic <code>SparkSession</code>, just use <code>SparkSession.builder()</code>:</p>
+    <p>The entry point into all functionality in Spark is the <a href="api/scala/index.html#org.apache.spark.sql.SparkSession"><code>SparkSession</code></a> class. To create a basic <code>SparkSession</code>, just use <code>SparkSession.builder()</code>:
+스파크에서의 모든 함수의 엔트리 포인트는 <a href="api/scala/index.html#org.apache.spark.sql.SparkSession"><code>SparkSession</code></a> 클래스이다. 기본적인 <code>SparkSession</code>을 생성하기 위해서, 단지 <code>SparkSession.builder()</code>를 사용하면 된다.</p>
 
     <div class="highlight"><pre><span class="k">import</span> <span class="nn">org.apache.spark.sql.SparkSession</span>
 
@@ -276,7 +314,8 @@ While, in <a href="api/java/index.html?org/apache/spark/sql/Dataset.html">Java A
 
 <div data-lang="java">
 
-    <p>The entry point into all functionality in Spark is the <a href="api/java/index.html#org.apache.spark.sql.SparkSession"><code>SparkSession</code></a> class. To create a basic <code>SparkSession</code>, just use <code>SparkSession.builder()</code>:</p>
+    <p>The entry point into all functionality in Spark is the <a href="api/java/index.html#org.apache.spark.sql.SparkSession"><code>SparkSession</code></a> class. To create a basic <code>SparkSession</code>, just use <code>SparkSession.builder()</code>:
+스파크에서의 모든 함수의 엔트리 포인트는 <a href="api/java/index.html#org.apache.spark.sql.SparkSession"><code>SparkSession</code></a> 클래스이다. 기본적인 <code>SparkSession</code>을 생성하기 위해서, 단지 <code>SparkSession.builder()</code>를 사용하면 된다.</p>
 
     <div class="highlight"><pre><span class="kn">import</span> <span class="nn">org.apache.spark.sql.SparkSession</span><span class="o">;</span>
 
@@ -291,7 +330,8 @@ While, in <a href="api/java/index.html?org/apache/spark/sql/Dataset.html">Java A
 
 <div data-lang="python">
 
-    <p>The entry point into all functionality in Spark is the <a href="api/python/pyspark.sql.html#pyspark.sql.SparkSession"><code>SparkSession</code></a> class. To create a basic <code>SparkSession</code>, just use <code>SparkSession.builder</code>:</p>
+    <p>The entry point into all functionality in Spark is the <a href="api/python/pyspark.sql.html#pyspark.sql.SparkSession"><code>SparkSession</code></a> class. To create a basic <code>SparkSession</code>, just use <code>SparkSession.builder</code>:
+스파크에서의 모든 함수의 엔트리 포인트는 <a href="api/python/index.html#org.apache.spark.sql.SparkSession"><code>SparkSession</code></a> 클래스이다. 기본적인 <code>SparkSession</code>을 생성하기 위해서, 단지 <code>SparkSession.builder()</code>를 사용하면 된다.</p>
 
     <div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
 
@@ -306,13 +346,20 @@ While, in <a href="api/java/index.html?org/apache/spark/sql/Dataset.html">Java A
 
 <div data-lang="r">
 
-    <p>The entry point into all functionality in Spark is the <a href="api/R/sparkR.session.html"><code>SparkSession</code></a> class. To initialize a basic <code>SparkSession</code>, just call <code>sparkR.session()</code>:</p>
+    <p>The entry point into all functionality in Spark is the <a href="api/R/sparkR.session.html"><code>SparkSession</code></a> class. To initialize a basic <code>SparkSession</code>, just call <code>sparkR.session()</code>:
+스파크에서의 모든 함수의 엔트리 포인트는 <a href="api/R/index.html#org.apache.spark.sql.SparkSession"><code>SparkSession</code></a> 클래스이다. 기본적인 <code>SparkSession</code>을 생성하기 위해서, 단지 <code>sparkR.session()</code>를 사용하면 된다.</p>
 
     <div class="highlight"><pre>sparkR.session<span class="p">(</span>appName <span class="o">=</span> <span class="s">&quot;MyApp&quot;</span><span class="p">,</span> sparkConfig <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>spark.some.config.option <span class="o">=</span> <span class="s">&quot;some-value&quot;</span><span class="p">))</span>
 </pre></div>
     <div><small>Find full example code at "examples/src/main/r/RSparkSQLExample.R" in the Spark repo.</small></div>
 
-    <p>Note that when invoked for the first time, <code>sparkR.session()</code> initializes a global <code>SparkSession</code> singleton instance, and always returns a reference to this instance for successive invocations. In this way, users only need to initialize the <code>SparkSession</code> once, then SparkR functions like <code>read.df</code> will be able to access this global instance implicitly, and users don&#8217;t need to pass the <code>SparkSession</code> instance around.</p>
+    <p>Note that when invoked for the first time, <code>sparkR.session()</code> initializes a global <code>SparkSession</code> singleton instance, and always returns a reference to this instance for successive
+ invocations. In this way, users only need to initialize the <code>SparkSession</code> once, then SparkR functions like <code>read.df</code> will be able to access this global instance implicitly, 
+ and users don&#8217;t need to pass the <code>SparkSession</code> instance around.</p>
+
+    <p>처음으로 호출할 때, <code>sparkR.session()</code>은 전역적인 <code>SparkSession</code> 단독 인스턴스를 초기화하고 항상 성공적인 호출에 대한 해당 인스턴스로 참조를 반환한다는 점에 주목하라. 이러한 방식으로, 사용자는 단지 <code>SparkSession</code>을 한번만 초기화하면 된다.
+그리고 나서 <code>read.df</code>와 같은 sparkR 함수는 이러한 전역 인스턴스에 내재적으로 접근할 수 있고, 사용자는 <code>SparkSession</code> 인스턴스를 주위에 전달할 필요가 없다.</p>
+
   </div>
 </div>
 
@@ -320,14 +367,21 @@ While, in <a href="api/java/index.html?org/apache/spark/sql/Dataset.html">Java A
 write queries using HiveQL, access to Hive UDFs, and the ability to read data from Hive tables.
 To use these features, you do not need to have an existing Hive setup.</p>
 
+<p>스파크 2.0의 <code>SparkSession</code>은 HiveQL을 사용하여 쿼리를 작성하는 능력, Hive UDF로의 접근, 그리고 Hive 테이블로부터 데이터를 읽어들이는 능력을 포함하는 하이브 특성에 대해 내장된 지원을 제공한다.
+이러한 특징을 사용하기 위해, 당신은 기존의 Hive 설정을 갖고 있을 필요가 없다.</p>
+
 <h2 id="creating-dataframes">Creating DataFrames</h2>
+<p>## DataFrame 생성하기</p>
 
 <div class="codetabs">
 <div data-lang="scala">
-    <p>With a <code>SparkSession</code>, applications can create DataFrames from an <a href="#interoperating-with-rdds">existing <code>RDD</code></a>,
-from a Hive table, or from <a href="#data-sources">Spark data sources</a>.</p>
 
-    <p>As an example, the following creates a DataFrame based on the content of a JSON file:</p>
+    <p>With a <code>SparkSession</code>, applications can create DataFrames from an <a href="#interoperating-with-rdds">existing <code>RDD</code></a>,
+from a Hive table, or from <a href="#data-sources">Spark data sources</a>.
+<code>SparkSession</code>으로, 애플리케이션은 <a href="#interoperating-with-rdds">기존 <code>RDD</code></a>, 하이브 테이블, 또는 <a href="#data-sources">Spark data sources</a>로부터 DataFrame을 생성할 수 있다.</p>
+
+    <p>As an example, the following creates a DataFrame based on the content of a JSON file:
+예시로서, 다음은 JSON 파일의 내용을 기반으로 DataFrame을 생성한다.</p>
 
     <div class="highlight"><pre><span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">json</span><span class="o">(</span><span class="s">&quot;examples/src/main/resources/people.json&quot;</span><span class="o">)</span>
 
@@ -345,10 +399,13 @@ from a Hive table, or from <a href="#data-sources">Spark data sources</a>.</p>
   </div>
 
 <div data-lang="java">
-    <p>With a <code>SparkSession</code>, applications can create DataFrames from an <a href="#interoperating-with-rdds">existing <code>RDD</code></a>,
-from a Hive table, or from <a href="#data-sources">Spark data sources</a>.</p>
 
-    <p>As an example, the following creates a DataFrame based on the content of a JSON file:</p>
+    <p>With a <code>SparkSession</code>, applications can create DataFrames from an <a href="#interoperating-with-rdds">existing <code>RDD</code></a>,
+from a Hive table, or from <a href="#data-sources">Spark data sources</a>.
+<code>SparkSession</code>으로, 애플리케이션은 <a href="#interoperating-with-rdds">기존 <code>RDD</code></a>, 하이브 테이블, 또는 <a href="#data-sources">Spark data sources</a>로부터 DataFrame을 생성할 수 있다.</p>
+
+    <p>As an example, the following creates a DataFrame based on the content of a JSON file:
+예시로서, 다음은 JSON 파일의 내용을 기반으로 DataFrame을 생성한다.</p>
 
     <div class="highlight"><pre><span class="kn">import</span> <span class="nn">org.apache.spark.sql.Dataset</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.apache.spark.sql.Row</span><span class="o">;</span>
@@ -369,10 +426,13 @@ from a Hive table, or from <a href="#data-sources">Spark data sources</a>.</p>
   </div>
 
 <div data-lang="python">
-    <p>With a <code>SparkSession</code>, applications can create DataFrames from an <a href="#interoperating-with-rdds">existing <code>RDD</code></a>,
-from a Hive table, or from <a href="#data-sources">Spark data sources</a>.</p>
 
-    <p>As an example, the following creates a DataFrame based on the content of a JSON file:</p>
+    <p>With a <code>SparkSession</code>, applications can create DataFrames from an <a href="#interoperating-with-rdds">existing <code>RDD</code></a>,
+from a Hive table, or from <a href="#data-sources">Spark data sources</a>.
+<code>SparkSession</code>으로, 애플리케이션은 <a href="#interoperating-with-rdds">기존 <code>RDD</code></a>, 하이브 테이블, 또는 <a href="#data-sources">Spark data sources</a>로부터 DataFrame을 생성할 수 있다.</p>
+
+    <p>As an example, the following creates a DataFrame based on the content of a JSON file:
+예시로서, 다음은 JSON 파일의 내용을 기반으로 DataFrame을 생성한다.</p>
 
     <div class="highlight"><pre><span class="c"># spark is an existing SparkSession</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="s">&quot;examples/src/main/resources/people.json&quot;</span><span class="p">)</span>
@@ -390,10 +450,13 @@ from a Hive table, or from <a href="#data-sources">Spark data sources</a>.</p>
   </div>
 
 <div data-lang="r">
-    <p>With a <code>SparkSession</code>, applications can create DataFrames from a local R data.frame,
-from a Hive table, or from <a href="#data-sources">Spark data sources</a>.</p>
 
-    <p>As an example, the following creates a DataFrame based on the content of a JSON file:</p>
+    <p>With a <code>SparkSession</code>, applications can create DataFrames from a local R data.frame,
+from a Hive table, or from <a href="#data-sources">Spark data sources</a>.
+<code>SparkSession</code>으로, 애플리케이션은 <a href="#interoperating-with-rdds">기존 <code>RDD</code></a>, 하이브 테이블, 또는 <a href="#data-sources">Spark data sources</a>로부터 DataFrame을 생성할 수 있다.</p>
+
+    <p>As an example, the following creates a DataFrame based on the content of a JSON file:
+예시로서, 다음은 JSON 파일의 내용을 기반으로 DataFrame을 생성한다.</p>
 
     <div class="highlight"><pre>df <span class="o">&lt;-</span> read.json<span class="p">(</span><span class="s">&quot;examples/src/main/resources/people.json&quot;</span><span class="p">)</span>
 
@@ -420,12 +483,16 @@ showDF<span class="p">(</span>df<span class="p">)</span>
 </div>
 
 <h2 id="untyped-dataset-operations-aka-dataframe-operations">Untyped Dataset Operations (aka DataFrame Operations)</h2>
+<p>## 형식화되지 않은 데이터집합 연산 (DataFrame 연산)</p>
 
-<p>DataFrames provide a domain-specific language for structured data manipulation in <a href="api/scala/index.html#org.apache.spark.sql.Dataset">Scala</a>, <a href="api/java/index.html?org/apache/spark/sql/Dataset.html">Java</a>, <a href="api/python/pyspark.sql.html#pyspark.sql.DataFrame">Python</a> and <a href="api/R/DataFrame.html">R</a>.</p>
+<p>DataFrames provide a domain-specific language for structured data manipulation in <a href="api/scala/index.html#org.apache.spark.sql.Dataset">Scala</a>, <a href="api/java/index.html?org/apache/spark/sql/Dataset.html">Java</a>, <a href="api/python/pyspark.sql.html#pyspark.sql.DataFrame">Python</a> and <a href="api/R/DataFrame.html">R</a>.
+DataFrame은 <a href="api/scala/index.html#org.apache.spark.sql.Dataset">스칼라</a>, <a href="api/java/index.html?org/apache/spark/sql/Dataset.html">자바</a>, <a href="api/python/pyspark.sql.html#pyspark.sql.DataFrame">파이썬</a> 그리고 <a href="api/R/DataFrame.html">R</a>로 정형 데이터 조작에 대한 도메인 특정 언어를 제공한다.</p>
 
-<p>As mentioned above, in Spark 2.0, DataFrames are just Dataset of <code>Row</code>s in Scala and Java API. These operations are also referred as &#8220;untyped transformations&#8221; in contrast to &#8220;typed transformations&#8221; come with strongly typed Scala/Java Datasets.</p>
+<p>As mentioned above, in Spark 2.0, DataFrames are just Dataset of <code>Row</code>s in Scala and Java API. These operations are also referred as &#8220;untyped transformations&#8221; in contrast to &#8220;typed transformations&#8221; come with strongly typed Scala/Java Datasets.
+위에서 언급한대로, 스파크 2.0에서 DataFrame은 스칼라와 자바 API에서 단지 <code>Row</code>의 데이터집합이다. 이러한 연산들은 또한 강력하게 형식화된 스칼라/자바 데이터셋과 함께 &#8220;형식화된 변형&#8221;과 대조적으로 &#8220;형식화되지 않은 변형&#8221;으로 언급된다.</p>
 
-<p>Here we include some basic examples of structured data processing using Datasets:</p>
+<p>Here we include some basic examples of structured data processing using Datasets:
+여기서 우리는 데이터셋을 사용하여 정형 데이터 처리의 몇 가지 기본적인 예시를 포함한다.</p>
 
 <div class="codetabs">
 <div data-lang="scala">
