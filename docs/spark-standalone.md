@@ -15,7 +15,7 @@ Mesos나 YARN 클러스터 관리자에서 실행하기 위해, 스파크는 간
 
 To install Spark Standalone mode, you simply place a compiled version of Spark on each node on the cluster. You can obtain pre-built versions of Spark with each release or [build it yourself](building-spark.html).
 
-스파크 스탠드얼론 모드를 실행하려면 클러스터의 각 노드에 컴파일된 스파크 버전을 위치시키면 된다. 스파크의 pre-built 버전(바이너리)을 다운로드 하거나 [자신이 직접 빌드](building-spark.html)를 할 수 있다. 
+스파크 스탠드얼론 모드를 실행하려면 클러스터의 각 노드에 컴파일된 스파크 버전을 위치시키면 된다. 스파크의 pre-built 버전(바이너리)을 다운로드 하거나 [자신이 직접 빌드](building-spark.html)를 할 수 있다.
 
 # Starting a Cluster Manually
 # 수동으로 클러스터 시작하기
@@ -40,44 +40,52 @@ Once you have started a worker, look at the master's web UI ([http://localhost:8
 You should see the new node listed there, along with its number of CPUs and memory (minus one gigabyte left for the OS).
 
 워커가 시작되면 마스터의 웹 UI[http://localhost:8080](http://localhost:8080)에서 확인할 수 있다.
-CPU, 메모리들과 함께 새로운 노드들을 확인할 수 있다. (minus one gigabyte left for OS). 
+CPU, 메모리들과 함께 새로운 노드들을 확인할 수 있다. (minus one gigabyte left for OS).
 
 Finally, the following configuration options can be passed to the master and worker:
-최종적으로, 다음 설정 옵션들을 마스터와 워커로 보낼 수 있다: 
+최종적으로, 다음 설정 옵션들을 마스터와 워커로 보낼 수 있다:
 
 <table class="table">
   <tr><th style="width:21%">Argument</th><th>Meaning</th></tr>
   <tr>
     <td><code>-h HOST</code>, <code>--host HOST</code></td>
-    <td>Hostname to listen on</td>
+    <td>Hostname to listen on
+    호스트명</td>
   </tr>
   <tr>
     <td><code>-i HOST</code>, <code>--ip HOST</code></td>
-    <td>Hostname to listen on (deprecated, use -h or --host)</td>
+    <td>Hostname to listen on (deprecated, use -h or --host)
+    호스트명 (deprecated, use -h or --host)</td>
   </tr>
   <tr>
     <td><code>-p PORT</code>, <code>--port PORT</code></td>
-    <td>Port for service to listen on (default: 7077 for master, random for worker)</td>
+    <td>Port for service to listen on (default: 7077 for master, random for worker)
+    서비스에 대한 포트 (기본값: 마스터 - 7077, 워커 - 랜덤)</td>
   </tr>
   <tr>
     <td><code>--webui-port PORT</code></td>
-    <td>Port for web UI (default: 8080 for master, 8081 for worker)</td>
+    <td>Port for web UI (default: 8080 for master, 8081 for worker)
+    웹 UI에 대한 포트 (기본값: 마스터 - 8080, 워커 - 8081)</td>
   </tr>
   <tr>
     <td><code>-c CORES</code>, <code>--cores CORES</code></td>
-    <td>Total CPU cores to allow Spark applications to use on the machine (default: all available); only on worker</td>
+    <td>Total CPU cores to allow Spark applications to use on the machine (default: all available); only on worker
+    머신에서 사용하기 위해 스파크 애플리케이션에 허용되는 CPU 코어 합계 (기본값: 사용가능한 전체); 워커에서만</td>
   </tr>
   <tr>
     <td><code>-m MEM</code>, <code>--memory MEM</code></td>
-    <td>Total amount of memory to allow Spark applications to use on the machine, in a format like 1000M or 2G (default: your machine's total RAM minus 1 GB); only on worker</td>
+    <td>Total amount of memory to allow Spark applications to use on the machine, in a format like 1000M or 2G (default: your machine's total RAM minus 1 GB); only on worker
+    머신에서 사용하기 위해 스파크 애플리케이션에 허용되는 메모리 합계, 1000M 또는 2G와 같은 형태로 사용한다. (기본값: 머신의 RAM 마이너스 1GB); 워커에서만</td>
   </tr>
   <tr>
     <td><code>-d DIR</code>, <code>--work-dir DIR</code></td>
-    <td>Directory to use for scratch space and job output logs (default: SPARK_HOME/work); only on worker</td>
+    <td>Directory to use for scratch space and job output logs (default: SPARK_HOME/work); only on worker
+    scratch 공간과 job 아웃풋 로그에 대해 사용하기 위한 디렉토리 (기본값: SPARK_HOME/work); 워커에서만</td>
   </tr>
   <tr>
     <td><code>--properties-file FILE</code></td>
-    <td>Path to a custom Spark properties file to load (default: conf/spark-defaults.conf)</td>
+    <td>Path to a custom Spark properties file to load (default: conf/spark-defaults.conf)
+    커스텀 스파크 속성 파일에 대한 경로 (기본값: conf/spark-defaults.conf)</td>
   </tr>
 </table>
 
@@ -94,7 +102,7 @@ If you do not have a password-less setup, you can set the environment variable S
 실행 스크립트로 스파크 스탠드얼론을 실행하기 위해, 스파크 디렉토리 하위에 conf/slaves 파일을 생성한다, 스파크 워커를 실행하려는 모든 머신에 한 줄에 하나씩 호스트 이름을 포함시켜야 한다.
 만약 conf/slaves 파일이 존재하지 않으면, 실행 스크립트는 싱글머신을 (localhost) 기본으로 실행한다, 이 것은 테스트에 유용하다.
 주의, 마스터 머신은 ssh를 통해 워커 머신들에 접근을 한다. 기본적으로 ssh는 병렬로 실행되고, 설정을 위해 비밀번호 없이(private key 사용) 접근 하도록 해야 한다.
-만약 비밀번호 없이 접근하도록 구성되어 있지 않다면, SPARK_SSH_FOREGROUND 환경변수를 설정할 수 있고 각 워커에 대한 직렬 비밀번호를 제공해야 한다. 
+만약 비밀번호 없이 접근하도록 구성되어 있지 않다면, SPARK_SSH_FOREGROUND 환경변수를 설정할 수 있고 각 워커에 대한 직렬 비밀번호를 제공해야 한다.
 
 
 Once you've set up this file, you can launch or stop your cluster with the following shell scripts, based on Hadoop's deploy scripts, and available in `SPARK_HOME/sbin`:
@@ -129,19 +137,23 @@ You can optionally configure the cluster further by setting environment variable
   <tr><th style="width:21%">Environment Variable</th><th>Meaning</th></tr>
   <tr>
     <td><code>SPARK_MASTER_HOST</code></td>
-    <td>Bind the master to a specific hostname or IP address, for example a public one.</td>
+    <td>Bind the master to a specific hostname or IP address, for example a public one.
+    특정 호스트명이나 IP 주소로 마스터를 바인드한다, 예를 들어 공개된 하나</td>
   </tr>
   <tr>
     <td><code>SPARK_MASTER_PORT</code></td>
-    <td>Start the master on a different port (default: 7077).</td>
+    <td>Start the master on a different port (default: 7077).
+    다른 포트로 마스터를 시작한다. (기본값 7077)</td>
   </tr>
   <tr>
     <td><code>SPARK_MASTER_WEBUI_PORT</code></td>
-    <td>Port for the master web UI (default: 8080).</td>
+    <td>Port for the master web UI (default: 8080).
+    마스터 웹 UI를 위한 포트 (기본값 8080)</td>
   </tr>
   <tr>
     <td><code>SPARK_MASTER_OPTS</code></td>
-    <td>Configuration properties that apply only to the master in the form "-Dx=y" (default: none). See below for a list of possible options.</td>
+    <td>Configuration properties that apply only to the master in the form "-Dx=y" (default: none). See below for a list of possible options.
+    "-Dx=y" 형태로 마스터에만 적용하는 설정 속성들 (기본값: none). 가능한 옵션들의 목록을 아래에서 확인할  수 있다.</td>
   </tr>
   <tr>
     <td><code>SPARK_LOCAL_DIRS</code></td>
@@ -149,15 +161,18 @@ You can optionally configure the cluster further by setting environment variable
     Directory to use for "scratch" space in Spark, including map output files and RDDs that get
     stored on disk. This should be on a fast, local disk in your system. It can also be a
     comma-separated list of multiple directories on different disks.
+    스파크에서 "scratch" 공간에 대해 사용하기 위한 디렉토리, map 아웃풋 파일들과 디스크에 저장된 RDDs를 포함한다. 로컬 디스크에 두어야 빠르다. 또한 다른 디스크들의 여러 디렉토리 목록을 콤마 구분자로 지정할 수 있다.
     </td>
   </tr>
   <tr>
     <td><code>SPARK_WORKER_CORES</code></td>
-    <td>Total number of cores to allow Spark applications to use on the machine (default: all available cores).</td>
+    <td>Total number of cores to allow Spark applications to use on the machine (default: all available cores).
+    머신에서 사용하기 위해 스파크 애플리케이션에 허용되는 코어 합계 (기본값: 사용가능한 코어 전체)</td>
   </tr>
   <tr>
     <td><code>SPARK_WORKER_MEMORY</code></td>
-    <td>Total amount of memory to allow Spark applications to use on the machine, e.g. <code>1000m</code>, <code>2g</code> (default: total memory minus 1 GB); note that each application's <i>individual</i> memory is configured using its <code>spark.executor.memory</code> property.</td>
+    <td>Total amount of memory to allow Spark applications to use on the machine, e.g. <code>1000m</code>, <code>2g</code> (default: total memory minus 1 GB); note that each application's <i>individual</i> memory is configured using its <code>spark.executor.memory</code> property.
+    머신에서 사용하기 위해 스파크 애플리케이션에 허용되는 메모리 합계. 예를들어 <code>1000m</code>, <code>2G</code> (기본값: 합계 메모리 마이너스 1GB); 각 애플리케이션의 <i>개별적</i> 메모리는 <code>spark.executor.memory</code> 속성을 사용하여 설정된다.</td>
   </tr>
   <tr>
     <td><code>SPARK_WORKER_PORT</code></td>
