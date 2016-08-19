@@ -176,35 +176,43 @@ CPU, 메모리들과 함께 새로운 노드들을 확인할 수 있다. (minus 
   <tr><th style="width:21%">Argument</th><th>Meaning</th></tr>
   <tr>
     <td><code>-h HOST</code>, <code>--host HOST</code></td>
-    <td>Hostname to listen on</td>
+    <td>Hostname to listen on
+    호스트명</td>
   </tr>
   <tr>
     <td><code>-i HOST</code>, <code>--ip HOST</code></td>
-    <td>Hostname to listen on (deprecated, use -h or --host)</td>
+    <td>Hostname to listen on (deprecated, use -h or --host)
+    호스트명 (deprecated, use -h or --host)</td>
   </tr>
   <tr>
     <td><code>-p PORT</code>, <code>--port PORT</code></td>
-    <td>Port for service to listen on (default: 7077 for master, random for worker)</td>
+    <td>Port for service to listen on (default: 7077 for master, random for worker)
+    서비스에 대한 포트 (기본값: 마스터 - 7077, 워커 - 랜덤)</td>
   </tr>
   <tr>
     <td><code>--webui-port PORT</code></td>
-    <td>Port for web UI (default: 8080 for master, 8081 for worker)</td>
+    <td>Port for web UI (default: 8080 for master, 8081 for worker)
+    웹 UI에 대한 포트 (기본값: 마스터 - 8080, 워커 - 8081)</td>
   </tr>
   <tr>
     <td><code>-c CORES</code>, <code>--cores CORES</code></td>
-    <td>Total CPU cores to allow Spark applications to use on the machine (default: all available); only on worker</td>
+    <td>Total CPU cores to allow Spark applications to use on the machine (default: all available); only on worker
+    머신에서 사용하기 위해 스파크 애플리케이션에 허용되는 CPU 코어 합계 (기본값: 사용가능한 전체); 워커에서만</td>
   </tr>
   <tr>
     <td><code>-m MEM</code>, <code>--memory MEM</code></td>
-    <td>Total amount of memory to allow Spark applications to use on the machine, in a format like 1000M or 2G (default: your machine's total RAM minus 1 GB); only on worker</td>
+    <td>Total amount of memory to allow Spark applications to use on the machine, in a format like 1000M or 2G (default: your machine's total RAM minus 1 GB); only on worker
+    머신에서 사용하기 위해 스파크 애플리케이션에 허용되는 메모리 합계, 1000M 또는 2G와 같은 형태로 사용한다. (기본값: 머신의 RAM 마이너스 1GB); 워커에서만</td>
   </tr>
   <tr>
     <td><code>-d DIR</code>, <code>--work-dir DIR</code></td>
-    <td>Directory to use for scratch space and job output logs (default: SPARK_HOME/work); only on worker</td>
+    <td>Directory to use for scratch space and job output logs (default: SPARK_HOME/work); only on worker
+    scratch 공간과 job 아웃풋 로그에 대해 사용하기 위한 디렉토리 (기본값: SPARK_HOME/work); 워커에서만</td>
   </tr>
   <tr>
     <td><code>--properties-file FILE</code></td>
-    <td>Path to a custom Spark properties file to load (default: conf/spark-defaults.conf)</td>
+    <td>Path to a custom Spark properties file to load (default: conf/spark-defaults.conf)
+    커스텀 스파크 속성 파일에 대한 경로 (기본값: conf/spark-defaults.conf)</td>
   </tr>
 </table>
 
@@ -257,19 +265,23 @@ If you do not have a password-less setup, you can set the environment variable S
   <tr><th style="width:21%">Environment Variable</th><th>Meaning</th></tr>
   <tr>
     <td><code>SPARK_MASTER_HOST</code></td>
-    <td>Bind the master to a specific hostname or IP address, for example a public one.</td>
+    <td>Bind the master to a specific hostname or IP address, for example a public one.
+    특정 호스트명이나 IP 주소로 마스터를 바인드한다, 예를 들어 공개된 하나</td>
   </tr>
   <tr>
     <td><code>SPARK_MASTER_PORT</code></td>
-    <td>Start the master on a different port (default: 7077).</td>
+    <td>Start the master on a different port (default: 7077).
+    다른 포트로 마스터를 시작한다. (기본값 7077)</td>
   </tr>
   <tr>
     <td><code>SPARK_MASTER_WEBUI_PORT</code></td>
-    <td>Port for the master web UI (default: 8080).</td>
+    <td>Port for the master web UI (default: 8080).
+    마스터 웹 UI를 위한 포트 (기본값 8080)</td>
   </tr>
   <tr>
     <td><code>SPARK_MASTER_OPTS</code></td>
-    <td>Configuration properties that apply only to the master in the form "-Dx=y" (default: none). See below for a list of possible options.</td>
+    <td>Configuration properties that apply only to the master in the form "-Dx=y" (default: none). See below for a list of possible options.
+    "-Dx=y" 형태로 마스터에만 적용하는 설정 속성들 (기본값: none). 가능한 옵션들의 목록을 아래에서 확인할  수 있다.</td>
   </tr>
   <tr>
     <td><code>SPARK_LOCAL_DIRS</code></td>
@@ -277,6 +289,7 @@ If you do not have a password-less setup, you can set the environment variable S
     Directory to use for "scratch" space in Spark, including map output files and RDDs that get
     stored on disk. This should be on a fast, local disk in your system. It can also be a
     comma-separated list of multiple directories on different disks.
+    스파크에서 "scratch" 공간에 대해 사용하기 위한 디렉토리, map 아웃풋 파일들과 디스크에 저장된 RDDs를 포함한다. 로컬 디스크에 두어야 빠르다. 또한 다른 디스크들의 여러 디렉토리 목록을 콤마 구분자로 지정할 수 있다.
     </td>
   </tr>
   <tr>
