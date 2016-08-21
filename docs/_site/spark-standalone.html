@@ -294,11 +294,13 @@ If you do not have a password-less setup, you can set the environment variable S
   </tr>
   <tr>
     <td><code>SPARK_WORKER_CORES</code></td>
-    <td>Total number of cores to allow Spark applications to use on the machine (default: all available cores).</td>
+    <td>Total number of cores to allow Spark applications to use on the machine (default: all available cores).
+    머신에서 사용하기 위해 스파크 애플리케이션에 허용되는 코어 합계 (기본값: 사용가능한 코어 전체)</td>
   </tr>
   <tr>
     <td><code>SPARK_WORKER_MEMORY</code></td>
-    <td>Total amount of memory to allow Spark applications to use on the machine, e.g. <code>1000m</code>, <code>2g</code> (default: total memory minus 1 GB); note that each application's <i>individual</i> memory is configured using its <code>spark.executor.memory</code> property.</td>
+    <td>Total amount of memory to allow Spark applications to use on the machine, e.g. <code>1000m</code>, <code>2g</code> (default: total memory minus 1 GB); note that each application's <i>individual</i> memory is configured using its <code>spark.executor.memory</code> property.
+    머신에서 사용하기 위해 스파크 애플리케이션에 허용되는 메모리 합계. 예를들어 <code>1000m</code>, <code>2G</code> (기본값: 합계 메모리 마이너스 1GB); 각 애플리케이션의 <i>개별적</i> 메모리는 <code>spark.executor.memory</code> 속성을 사용하여 설정된다.</td>
   </tr>
   <tr>
     <td><code>SPARK_WORKER_PORT</code></td>
