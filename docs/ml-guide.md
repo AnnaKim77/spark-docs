@@ -1,95 +1,84 @@
 ---
 layout: global
 title: "MLlib: Main Guide"
-displayTitle: "Machine Learning Library (MLlib) Guide"
+displayTitle: "기계학습 라이브러리(MLlib) 가이드"
 ---
 
-MLlib is Spark's machine learning (ML) library.
-Its goal is to make practical machine learning scalable and easy.
-At a high level, it provides tools such as:
+MLlib는 스파크의 기계학습 라이브러리입니다. 이 라이브러리의 목표는 쉽고 확장가능한 실용적인 기계 학습을 하는 것입니다. 고수준에서 다음과 같은 툴을 제공합니다.
 
-* ML Algorithms: common learning algorithms such as classification, regression, clustering, and collaborative filtering
-* Featurization: feature extraction, transformation, dimensionality reduction, and selection
-* Pipelines: tools for constructing, evaluating, and tuning ML Pipelines
-* Persistence: saving and load algorithms, models, and Pipelines
-* Utilities: linear algebra, statistics, data handling, etc.
+* ML 알고리즘 : 분류, 회귀, 클러스터링, 협업 필터링과 같은 학습 알고리즘
+* 특성화 : 특성 추출, 변환, 차원 축소, 셀렉션
+* 파이프라인 : 구성을 위한 툴, 평가, ML 파이프라인의 조율
+* 지속성 : 알고리즘, 모델, 파이프라인의 저장 및 로드 
+* 유틸리티 : 선형 대수, 통계, 데이터 핸들링 등.
 
-# Announcement: DataFrame-based API is primary API
+# 공지사항 : DataFrame 기반 API가 주 API 입니다.
 
-**The MLlib RDD-based API is now in maintenance mode.**
+**MLlib Rdd 기반 API는 현재 정비모드 입니다.**
+Spark 2.0에서는 `spark.mllib` 패키지의 RDD 기반 API는 정비모드이며 Spark의 주된 기계학습 API는 `spark.ml`패키지에서 제공하는 DataFrame 기반 API 입니다.
 
-As of Spark 2.0, the [RDD](programming-guide.html#resilient-distributed-datasets-rdds)-based APIs in the `spark.mllib` package have entered maintenance mode.
-The primary Machine Learning API for Spark is now the [DataFrame](sql-programming-guide.html)-based API in the `spark.ml` package.
 
-*What are the implications?*
+*어떤 영향이 있을까요?*
 
-* MLlib will still support the RDD-based API in `spark.mllib` with bug fixes.
-* MLlib will not add new features to the RDD-based API.
-* In the Spark 2.x releases, MLlib will add features to the DataFrames-based API to reach feature parity with the RDD-based API.
-* After reaching feature parity (roughly estimated for Spark 2.2), the RDD-based API will be deprecated.
-* The RDD-based API is expected to be removed in Spark 3.0.
+* MLlib는 버그를 수정한 `spark.mllib` 에서 RDD 기반 API를 계속 지원 할 것입니다.
+* MLlib는 RDD 기반 API에 새로운 feature를 추가 하지 않을 것입니다.
+* Spark 2.x 릴리즈에서는 MLlib는 DataFrame 기반 API에 RDD 기반 API와 비슷한 수준의 feature까지 이를 수 있는 feature를 추가할 것입니다.
+* feature가 비슷한 수준에 도달한 후(대략 Spark 2.2), RDD 기반 API는 사용되지 않을 것입니다.
+* Spark 3.0 에서 RDD 기반 API는 없어질 것입니다.
 
-*Why is MLlib switching to the DataFrame-based API?*
 
-* DataFrames provide a more user-friendly API than RDDs.  The many benefits of DataFrames include Spark Datasources, SQL/DataFrame queries, Tungsten and Catalyst optimizations, and uniform APIs across languages.
-* The DataFrame-based API for MLlib provides a uniform API across ML algorithms and across multiple languages.
-* DataFrames facilitate practical ML Pipelines, particularly feature transformations.  See the [Pipelines guide](ml-pipeline.html) for details.
+*MLlib는 왜 DataFrame 기반 API로 바뀌는 것일까요?*
 
-# Dependencies
+* DataFrame은 RDD에 비해서 사용 친화적인 API를 제공합니다. DataFrame Spark Datasource, SQL/DataFrame 쿼리, Tungsten 과 Catalyst 최적화, 언어별 획일적인 API은등 많은 이점이 있습니다.
+* MLlib의 DataFrame 기반 API는 다수의 언어 및 ML 알고리즘을 아우르는 획일화된 API를 제공합니다.
+* DataFrame은 ML 파이프라인, 특히 특성 변환을 용이하게 합니다. 자세한 사항은 [Pipelines guide](ml-pipeline.html) 을 참고하세요.
 
-MLlib uses the linear algebra package [Breeze](http://www.scalanlp.org/), which depends on
-[netlib-java](https://github.com/fommil/netlib-java) for optimised numerical processing.
-If native libraries[^1] are not available at runtime, you will see a warning message and a pure JVM
-implementation will be used instead.
 
-Due to licensing issues with runtime proprietary binaries, we do not include `netlib-java`'s native
-proxies by default.
-To configure `netlib-java` / Breeze to use system optimised binaries, include
-`com.github.fommil.netlib:all:1.1.2` (or build Spark with `-Pnetlib-lgpl`) as a dependency of your
-project and read the [netlib-java](https://github.com/fommil/netlib-java) documentation for your
-platform's additional installation instructions.
+# 의존성
 
-To use MLlib in Python, you will need [NumPy](http://www.numpy.org) version 1.4 or newer.
+MLlib는 수치적 처리 최적화를 위한 [netlib-java](https://github.com/fommil/netlib-java)에 의존하는 [Breeze](http://www.scalanlp.org/) 라는 선형 대수 패키지를 사용합니다.
+만약 실행시간에 네이티브 라이브러리[^1]가 없다면, 경고 메세지를 받을 것이며 pure JVM이 대신 사용될 것입니다. 
 
-[^1]: To learn more about the benefits and background of system optimised natives, you may wish to
-    watch Sam Halliday's ScalaX talk on [High Performance Linear Algebra in Scala](http://fommil.github.io/scalax14/#/).
+런타임 독점 바이너리 라이센스 이슈 때문이라면, 우리는 기본적으로 `netlib-java`의 네이티브 프록시를 포함하지 않습니다.
+`netlib-java` 구현/ Breeze를 시스템 최적화 바이너리로 사용하기 위해서는 `com.github.fommil.netlib:all:1.1.2` (혹은 스파크 구성에 `-Pnetlib-lgpl`)을 프로젝트의 의존으로 포함하고,  
+플랫폼의 추가적인 설치가이드는 [netlib-java](https://github.com/fommil/netlib-java) 문서를 읽어보세용~
 
-# Migration guide
+Python에서 MLlib를 사용할 때 [NumPy](http://www.numpy.org) 1.4 버전이나 더 최신 버전이 필요합니다.
 
-MLlib is under active development.
-The APIs marked `Experimental`/`DeveloperApi` may change in future releases,
-and the migration guide below will explain all changes between releases.
 
-## From 1.6 to 2.0
+[^1]: 시스템 최적화 네이티브의 이점 및 배경에 관해서 알고 싶다면, Sam Halliday's ScalaX talk [High Performance Linear Algebra in Scala](http://fommil.github.io/scalax14/#/)을 참고하세요.
 
-### Breaking changes
 
-There were several breaking changes in Spark 2.0, which are outlined below.
+# 마이그레이션 가이드
 
-**Linear algebra classes for DataFrame-based APIs**
+MLlib는 아직 개발중에 있습니다. `Experimental`/`DeveloperApi`가 붙은 API는 추후에 나올 릴리즈에서 변경되고, 마이그레이션 가이드는 릴리즈 중간중간 모든 변경사항을 기술할 것입니다.
 
-Spark's linear algebra dependencies were moved to a new project, `mllib-local` 
-(see [SPARK-13944](https://issues.apache.org/jira/browse/SPARK-13944)). 
-As part of this change, the linear algebra classes were copied to a new package, `spark.ml.linalg`. 
-The DataFrame-based APIs in `spark.ml` now depend on the `spark.ml.linalg` classes, 
-leading to a few breaking changes, predominantly in various model classes 
-(see [SPARK-14810](https://issues.apache.org/jira/browse/SPARK-14810) for a full list).
 
-**Note:** the RDD-based APIs in `spark.mllib` continue to depend on the previous package `spark.mllib.linalg`.
+## 1.6에서 2.0까지
 
-_Converting vectors and matrices_
+### 변경된 사항
 
-While most pipeline components support backward compatibility for loading, 
-some existing `DataFrames` and pipelines in Spark versions prior to 2.0, that contain vector or matrix 
-columns, may need to be migrated to the new `spark.ml` vector and matrix types. 
-Utilities for converting `DataFrame` columns from `spark.mllib.linalg` to `spark.ml.linalg` types
-(and vice versa) can be found in `spark.mllib.util.MLUtils`.
+Spark 2.0에서 변경된 사항은 하단에 강조되어 있습니다.
 
-There are also utility methods available for converting single instances of 
-vectors and matrices. Use the `asML` method on a `mllib.linalg.Vector` / `mllib.linalg.Matrix`
-for converting to `ml.linalg` types, and 
-`mllib.linalg.Vectors.fromML` / `mllib.linalg.Matrices.fromML` 
-for converting to `mllib.linalg` types.
+**DataFrame 기반 API를 위한 선형 대수 클래스**
+
+Spark의 선형 대수 의존성은 새 프로젝트인 `mllib-local`로 옮겨졌습니다.
+(참고 : [SPARK-13944](https://issues.apache.org/jira/browse/SPARK-13944)).
+선형 대수 클래스는 새로운 패키지 `spark.ml.linalg`에 복사되었습니다. DataFrame 기반 API인 `spark.ml`은 `spark.ml.linalg`에 의존하며, 
+다양한 모형 클래스에서 주로 변경이 되었습니다.
+(전체 리스트 참고 : [SPARK-14810](https://issues.apache.org/jira/browse/SPARK-14810)).
+
+**Note:** `spark.mllib`의 RDD 기반 API는 `spark.mllib.linalg`패키지에 계속 의존합니다.
+
+_벡터와 행렬로의 변환_
+
+대부분의 파이프라인 구성요소들이 로딩을 위해 백워드 호환을 지원하는 동안, Spark 2.0 이전 버전에서 벡터와 행렬을 포함하는 `DataFrames`과 파이프라인
+은 새로운 `spark.ml` 벡터와 행렬 타입으로 마이그레이션이 필요합니다.
+`spark.mllib.linalg`에서 `spark.ml.linalg`로 `DataFrame`열 변환을 위한 유틸리티는 `spark.mllib.util.MLUtils`에서 확인할 수 있습니다.
+
+벡터와 행렬 단일 변환을 위한 다른 유틸리티도 있습니다. `ml.linalg` 타입으로 변환하기 위한 `mllib.linalg.Vector` / `mllib.linalg.Matrix`,
+`mllib.linalg`타입으로 변환하기 위한 `mllib.linalg.Vectors.fromML` / `mllib.linalg.Matrices.fromML`의 `asML`방법을 사용합니다. 
+
 
 <div class="codetabs">
 <div data-lang="scala"  markdown="1">
@@ -105,7 +94,7 @@ val mlVec: org.apache.spark.ml.linalg.Vector = mllibVec.asML
 val mlMat: org.apache.spark.ml.linalg.Matrix = mllibMat.asML
 {% endhighlight %}
 
-Refer to the [`MLUtils` Scala docs](api/scala/index.html#org.apache.spark.mllib.util.MLUtils$) for further detail.
+더 자세한 것은 [`MLUtils` Scala docs](api/scala/index.html#org.apache.spark.mllib.util.MLUtils$)에 있습니다.
 </div>
 
 <div data-lang="java" markdown="1">
@@ -122,7 +111,7 @@ org.apache.spark.ml.linalg.Vector mlVec = mllibVec.asML();
 org.apache.spark.ml.linalg.Matrix mlMat = mllibMat.asML();
 {% endhighlight %}
 
-Refer to the [`MLUtils` Java docs](api/java/org/apache/spark/mllib/util/MLUtils.html) for further detail.
+더 자세한 것은 [`MLUtils` Java docs](api/java/org/apache/spark/mllib/util/MLUtils.html)에 있습니다.
 </div>
 
 <div data-lang="python"  markdown="1">
@@ -138,7 +127,7 @@ mlVec = mllibVec.asML()
 mlMat = mllibMat.asML()
 {% endhighlight %}
 
-Refer to the [`MLUtils` Python docs](api/python/pyspark.mllib.html#pyspark.mllib.util.MLUtils) for further detail.
+더 자세한 것은 [`MLUtils` Python docs](api/python/pyspark.mllib.html#pyspark.mllib.util.MLUtils)에 있습니다.
 </div>
 </div>
 
@@ -156,59 +145,60 @@ Several deprecated methods were removed in the `spark.mllib` and `spark.ml` pack
 
 A full list of breaking changes can be found at [SPARK-14810](https://issues.apache.org/jira/browse/SPARK-14810).
 
-### Deprecations and changes of behavior
 
-**Deprecations**
+### 사용되지 않거나 달라진 사항
 
-Deprecations in the `spark.mllib` and `spark.ml` packages include:
+**사용되지 않는 것**
+
+`spark.mllib`와 `spark.ml`패키지에서 사용되지 않는 사항들 :
 
 * [SPARK-14984](https://issues.apache.org/jira/browse/SPARK-14984):
- In `spark.ml.regression.LinearRegressionSummary`, the `model` field has been deprecated.
+ `spark.ml.regression.LinearRegressionSummary`에서 `model`필드는 사용되지 않습니다.
 * [SPARK-13784](https://issues.apache.org/jira/browse/SPARK-13784):
- In `spark.ml.regression.RandomForestRegressionModel` and `spark.ml.classification.RandomForestClassificationModel`,
- the `numTrees` parameter has been deprecated in favor of `getNumTrees` method.
+ `spark.ml.regression.RandomForestRegressionModel`과 `spark.ml.classification.RandomForestClassificationModel`에서
+ `getNumTrees`로 인하여 `numTrees`파라미터는 사용되지 않습니다.
 * [SPARK-13761](https://issues.apache.org/jira/browse/SPARK-13761):
- In `spark.ml.param.Params`, the `validateParams` method has been deprecated.
- We move all functionality in overridden methods to the corresponding `transformSchema`.
+ `spark.ml.param.Params`에서 `validateParams`은 사용되지 않습니다. `transformSchema`에 재정의 되는 메서드의 모든 기능들을 옮겼습니다.
 * [SPARK-14829](https://issues.apache.org/jira/browse/SPARK-14829):
- In `spark.mllib` package, `LinearRegressionWithSGD`, `LassoWithSGD`, `RidgeRegressionWithSGD` and `LogisticRegressionWithSGD` have been deprecated.
- We encourage users to use `spark.ml.regression.LinearRegresson` and `spark.ml.classification.LogisticRegresson`.
+ `spark.mllib`패키지의 `LinearRegressionWithSGD`, `LassoWithSGD`, `RidgeRegressionWithSGD`, `LogisticRegressionWithSGD`은 사용되지 않습니다.
+ `spark.ml.regression.LinearRegression`과 `spark.ml.classification.LogisticRegression` 사용을 권장합니다.
 * [SPARK-14900](https://issues.apache.org/jira/browse/SPARK-14900):
- In `spark.mllib.evaluation.MulticlassMetrics`, the parameters `precision`, `recall` and `fMeasure` have been deprecated in favor of `accuracy`.
+ `spark.mllib.evaluation.MulticlassMetrics`에서 `precision`, `recall`, `fMeasure`은 사용되지 않고 `accuracy`가 대체합니다.
 * [SPARK-15644](https://issues.apache.org/jira/browse/SPARK-15644):
- In `spark.ml.util.MLReader` and `spark.ml.util.MLWriter`, the `context` method has been deprecated in favor of `session`.
-* In `spark.ml.feature.ChiSqSelectorModel`, the `setLabelCol` method has been deprecated since it was not used by `ChiSqSelectorModel`.
+ `spark.ml.util.MLReader`와 `spark.ml.util.MLWriter`에서 `context`은 `session`으로 대체됩니다.
+* `spark.ml.feature.ChiSqSelectorModel`에서, `ChiSqSelectorModel`가 사용되지 않기 때문에 `setLabelCol`은 사용되지 않습니다.
 
-**Changes of behavior**
+**달라진 사항**
 
-Changes of behavior in the `spark.mllib` and `spark.ml` packages include:
+`spark.mllib`와 `spark.ml`패키지에서 달라진 사항들 :
 
 * [SPARK-7780](https://issues.apache.org/jira/browse/SPARK-7780):
- `spark.mllib.classification.LogisticRegressionWithLBFGS` directly calls `spark.ml.classification.LogisticRegresson` for binary classification now.
- This will introduce the following behavior changes for `spark.mllib.classification.LogisticRegressionWithLBFGS`:
-    * The intercept will not be regularized when training binary classification model with L1/L2 Updater.
-    * If users set without regularization, training with or without feature scaling will return the same solution by the same convergence rate.
+ 이항 분류 문제를 위해 `spark.mllib.classification.LogisticRegressionWithLBFGS`은 직접적으로 `spark.ml.classification.LogisticRegression`을 호출합니다.
+ `spark.mllib.classification.LogisticRegressionWithLBFGS`의 달라진 사항들 : 
+    * L1/L2 Updater를 포함한 이항 분류 모형을 훈련시킬 때, 절편은 제약되지 않습니다.
+    * 제약이 없는 구성이면, 특성 스케일링 여부과 관계 없이 훈련은 같은 수렴률에 따른 동일한 해결안을 제공합니다.    
 * [SPARK-13429](https://issues.apache.org/jira/browse/SPARK-13429):
- In order to provide better and consistent result with `spark.ml.classification.LogisticRegresson`,
- the default value of `spark.mllib.classification.LogisticRegressionWithLBFGS`: `convergenceTol` has been changed from 1E-4 to 1E-6.
+ `spark.ml.classification.LogisticRegression`의 일관되고 더 나은 결과를 제공을 하기위해, 
+ `spark.mllib.classification.LogisticRegressionWithLBFGS`: `convergenceTol`의 디폴트 값은 1E-4에서 1E-6으로 달라집니다.
 * [SPARK-12363](https://issues.apache.org/jira/browse/SPARK-12363):
- Fix a bug of `PowerIterationClustering` which will likely change its result.
+ 결과물을 바꿀 가능성이 있는 `PowerIterationClustering`의 버그를 수정하였습니다.
 * [SPARK-13048](https://issues.apache.org/jira/browse/SPARK-13048):
- `LDA` using the `EM` optimizer will keep the last checkpoint by default, if checkpointing is being used.
+  `EM` 최적화를 사용하는 `LDA`는 체크포인트가 사용될 시, 최종 체크포인트의 디폴트로 제공됩니다.
 * [SPARK-12153](https://issues.apache.org/jira/browse/SPARK-12153):
- `Word2Vec` now respects sentence boundaries. Previously, it did not handle them correctly.
+ `Word2Vec`의 문장 바운더리는 이전에는 정확하게 핸들링하지 못했지만 지금은 신뢰할수 있습니다.  
 * [SPARK-10574](https://issues.apache.org/jira/browse/SPARK-10574):
- `HashingTF` uses `MurmurHash3` as default hash algorithm in both `spark.ml` and `spark.mllib`.
+  `spark.ml`과 `spark.mllib`의 `HashingTF`은 `MurmurHash3`을 해쉬 알고리즘의 디폴트로 사용합니다.
 * [SPARK-14768](https://issues.apache.org/jira/browse/SPARK-14768):
- The `expectedType` argument for PySpark `Param` was removed.
+ PySpark `Param`에 대한 논쟁이 있는 `expectedType`은 제거되었습니다.
 * [SPARK-14931](https://issues.apache.org/jira/browse/SPARK-14931):
- Some default `Param` values, which were mismatched between pipelines in Scala and Python, have been changed.
+ 스칼라 파이프라인과 파이썬 사이에 맞지 않았던 디폴트 `Param` 값은 바뀌었습니다.
 * [SPARK-13600](https://issues.apache.org/jira/browse/SPARK-13600):
- `QuantileDiscretizer` now uses `spark.sql.DataFrameStatFunctions.approxQuantile` to find splits (previously used custom sampling logic).
- The output buckets will differ for same input data and params.
+`QuantileDiscretizer` 는 `spark.sql.DataFrameStatFunctions.approxQuantile`을 사용하여 분리점을 찾습니다. (이전엔 전통적인 샘플링 로직을 이용하였습니다.)
+ 동일한 입력 데이터와 파라미터를 사용하지만 결과물은 다를수 있습니다.
+ 
 
-## Previous Spark versions
+## 이전 스파크 버전들
 
-Earlier migration guides are archived [on this page](ml-migration-guides.html).
+이전 마이그레이션 가이드는 [on this page](ml-migration-guides.html)에 있습니다.
 
 ---
